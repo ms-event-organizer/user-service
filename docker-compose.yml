@@ -1,0 +1,28 @@
+services:
+  stats-server:
+    build: user-service
+    image: user-service
+    container_name: meetup-user-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mus-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mus-db:5432/mus
+      - SPRING_DATASOURCE_USERNAME=dbuser
+      - SPRING_DATASOURCE_PASSWORD=12345
+
+  mus-db:
+    image: postgres:16.4
+    container_name: meetup-user-service-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=stats
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=12345
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10

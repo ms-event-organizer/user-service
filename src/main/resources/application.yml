@@ -1,0 +1,30 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: 12345
+    url: jdbc:postgresql://localhost:5432/mus
+    username: dbuser
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show_sql: true
+  sql:
+    init:
+      mode: always
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: INFO
+        transaction: INFO
+        transaction.interceptor: TRACE
+        web:
+          client:
+            RestTemplate: DEBUG
