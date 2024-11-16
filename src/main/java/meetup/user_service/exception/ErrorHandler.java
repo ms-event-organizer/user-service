@@ -35,12 +35,4 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDuplicatedData(final DataIntegrityViolationException e) {
-        return new ErrorResponse(
-                "Data Integrity Violation!",
-                e.getMessage()
-        );
-    }
 }

@@ -4,6 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordUtils {
     public static final String NOT_STRONG_PASSWORD = "Password is not strong! Password: at least 8 characters, one uppercase, one lowercase, one digit, and one special character \"!@#$%^&*()-+\".";
+    public static final String WRONG_PASSWORD = "Wrong password!";
 
     public static String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
