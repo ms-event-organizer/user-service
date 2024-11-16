@@ -1,4 +1,4 @@
-package meetup.user_service.user;
+package meetup.user_service.user.mapper;
 
 import meetup.user_service.user.dto.UserDto;
 import meetup.user_service.user.model.User;

@@ -1,11 +1,13 @@
-package meetup.user_service.user;
+package meetup.user_service.user.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import meetup.user_service.user.dto.NewUserDto;
+import meetup.user_service.user.dto.NewUserRequest;
+import meetup.user_service.user.dto.UpdateUserRequest;
 import meetup.user_service.user.dto.UserDto;
+import meetup.user_service.user.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,17 +35,17 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @RequestBody @Valid NewUserDto newUserDto) {
-        log.debug("Creating user '{}' by user id = '{}'", newUserDto.getName(), userId);
-        return userService.createUser(userId, newUserDto);
+                              @RequestBody @Valid NewUserRequest newUserRequest) {
+        log.debug("Creating user '{}' by user id = '{}'", newUserRequest.getName(), userId);
+        return userService.createUser(userId, newUserRequest);
     }
 
     @PatchMapping
     public UserDto updateUser(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestHeader("X-Sharer-User-Password") String userPassword,
-                              @RequestBody NewUserDto newUserDto) {
+                              @RequestBody UpdateUserRequest updateUserRequest) {
         log.debug("Updating user id = '{}'", userId);
-        return userService.updateUser(userId, userPassword, newUserDto);
+        return userService.updateUser(userId, userPassword, updateUserRequest);
     }
 
     @GetMapping("/{id}")

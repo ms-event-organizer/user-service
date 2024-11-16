@@ -1,11 +1,14 @@
-package meetup.user_service.user;
+package meetup.user_service.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import meetup.user_service.exception.NotFoundException;
 import meetup.user_service.exception.ValidationException;
+import meetup.user_service.user.util.PasswordUtils;
+import meetup.user_service.user.mapper.UserMapper;
 import meetup.user_service.user.dao.UserRepository;
-import meetup.user_service.user.dto.NewUserDto;
+import meetup.user_service.user.dto.NewUserRequest;
+import meetup.user_service.user.dto.UpdateUserRequest;
 import meetup.user_service.user.dto.UserDto;
 import meetup.user_service.user.model.User;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static meetup.user_service.user.PasswordUtils.hashPassword;
+import static meetup.user_service.user.util.PasswordUtils.hashPassword;
 
 @Service
 @RequiredArgsConstructor
@@ -21,32 +24,32 @@ import static meetup.user_service.user.PasswordUtils.hashPassword;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    public UserDto createUser(Long userId, NewUserDto newUserDto) {
-        checkPasswordStrength(newUserDto.getPassword());
+    public UserDto createUser(Long userId, NewUserRequest newUserRequest) {
+        checkPasswordStrength(newUserRequest.getPassword());
         User newUser = userRepository.save(
                 User.builder()
-                        .name(newUserDto.getName())
-                        .email(newUserDto.getEmail())
-                        .password(hashPassword(newUserDto.getPassword()))
-                        .aboutMe(newUserDto.getAboutMe())
+                        .name(newUserRequest.getName())
+                        .email(newUserRequest.getEmail())
+                        .password(hashPassword(newUserRequest.getPassword()))
+                        .aboutMe(newUserRequest.getAboutMe())
                         .build()
         );
         log.info("User with id = '{}' was created", newUser.getId());
         return UserMapper.toUserDto(newUser);
     }
 
-    public UserDto updateUser(Long userId, String userPassword, NewUserDto newUserDto) {
+    public UserDto updateUser(Long userId, String userPassword, UpdateUserRequest updateUserRequest) {
         User user = getUserById(userId);
         verifyPassword(userPassword, user.getPassword());
-        if (newUserDto.getName() != null && !newUserDto.getName().isBlank()) {
-            user.setName(newUserDto.getName());
+        if (updateUserRequest.getName() != null && !updateUserRequest.getName().isBlank()) {
+            user.setName(updateUserRequest.getName());
         }
-        if (newUserDto.getAboutMe() != null && !newUserDto.getAboutMe().isBlank()) {
-            user.setAboutMe(newUserDto.getAboutMe());
+        if (updateUserRequest.getAboutMe() != null && !updateUserRequest.getAboutMe().isBlank()) {
+            user.setAboutMe(updateUserRequest.getAboutMe());
         }
-        if (newUserDto.getPassword() != null) {
-            checkPasswordStrength(newUserDto.getPassword());
-            user.setPassword(newUserDto.getPassword());
+        if (updateUserRequest.getPassword() != null) {
+            checkPasswordStrength(updateUserRequest.getPassword());
+            user.setPassword(updateUserRequest.getPassword());
         }
         userRepository.save(user);
         log.info("User with id = '{}' was updated", user.getId());

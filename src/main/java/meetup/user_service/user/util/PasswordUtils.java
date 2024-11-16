@@ -1,4 +1,4 @@
-package meetup.user_service.user;
+package meetup.user_service.user.util;
 
 import org.mindrot.jbcrypt.BCrypt;
 
