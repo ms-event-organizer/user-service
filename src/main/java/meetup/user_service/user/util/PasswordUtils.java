@@ -1,20 +1,26 @@
 package meetup.user_service.user.util;
 
+import lombok.Getter;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.stereotype.Component;
 
+@Getter
+@Component
 public class PasswordUtils {
-    public static final String NOT_STRONG_PASSWORD = "Password is not strong! Password: at least 8 characters, one uppercase, one lowercase, one digit, and one special character \"!@#$%^&*()-+\".";
-    public static final String WRONG_PASSWORD = "Wrong password!";
+    private final String specialChars = "!@#$%^&*()-+";
+    private final String notStrongPasswordText = "Password is not strong! Password: at least 8 characters, " +
+            "one uppercase, one lowercase, one digit, and one special character " + specialChars;
+    private final String wrongPasswordText = "Wrong password!";
 
-    public static String hashPassword(String password) {
+    public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public static boolean verifyPassword(String password, String hashedPassword) {
+    public boolean verifyPassword(String password, String hashedPassword) {
         return BCrypt.checkpw(password, hashedPassword);
     }
 
-    public static boolean isPasswordStrong(String password) {
+    public boolean isPasswordStrong(String password) {
         if (password == null || password.length() < 8) {
             return false;
         }
@@ -23,8 +29,6 @@ public class PasswordUtils {
         boolean hasLowercase = false;
         boolean hasDigit = false;
         boolean hasSpecialChar = false;
-
-        String specialChars = "!@#$%^&*()-+";
 
         for (char c : password.toCharArray()) {
             if (Character.isUpperCase(c)) {

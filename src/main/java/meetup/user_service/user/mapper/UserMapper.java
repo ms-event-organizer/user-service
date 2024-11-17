@@ -2,19 +2,22 @@ package meetup.user_service.user.mapper;
 
 import meetup.user_service.user.dto.UserDto;
 import meetup.user_service.user.model.User;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class UserMapper {
 
-    public static List<UserDto> toUserDtoList(List<User> users) {
+    public List<UserDto> toUserDtoList(List<User> users) {
         if (users == null) return List.of();
         return users.stream()
-                .map(UserMapper::toUserDto)
+                .map(this::toUserDto)
                 .toList();
     }
 
-    public static UserDto toUserDto(User user) {
+    public UserDto toUserDto(User user) {
+        if (user == null) return null;
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -23,4 +26,15 @@ public class UserMapper {
                 .build();
     }
 
+    public UserDto toUserDtoWithPassword(User user) {
+        if (user == null) return null;
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .aboutMe(user.getAboutMe())
+                .build();
+    }
 }
+

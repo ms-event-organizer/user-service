@@ -1,6 +1,6 @@
 services:
-  stats-server:
-    build: user-service
+  user-service:
+    build: .
     image: user-service
     container_name: meetup-user-service
     ports:
@@ -18,7 +18,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=stats
+      - POSTGRES_DB=mus
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=12345
     healthcheck:

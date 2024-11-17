@@ -36,7 +36,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestBody @Valid NewUserRequest newUserRequest) {
-        log.debug("Creating user '{}' by user id = '{}'", newUserRequest.getName(), userId);
+        log.debug("Creating user '{}' by user id = '{}'", newUserRequest.name(), userId);
         return userService.createUser(userId, newUserRequest);
     }
 
