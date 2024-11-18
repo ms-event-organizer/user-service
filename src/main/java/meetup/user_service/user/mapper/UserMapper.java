@@ -1,40 +1,37 @@
 package meetup.user_service.user.mapper;
 
+import meetup.user_service.user.dto.NewUserRequest;
+import meetup.user_service.user.dto.UpdateUserRequest;
 import meetup.user_service.user.dto.UserDto;
 import meetup.user_service.user.model.User;
-import org.springframework.stereotype.Component;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 import java.util.List;
 
-@Component
-public class UserMapper {
+import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
-    public List<UserDto> toUserDtoList(List<User> users) {
-        if (users == null) return List.of();
-        return users.stream()
-                .map(this::toUserDto)
-                .toList();
-    }
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    @Mapping(target = "id", ignore = true)
+    User toUser(NewUserRequest newUserRequest);
 
-    public UserDto toUserDto(User user) {
-        if (user == null) return null;
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .aboutMe(user.getAboutMe())
-                .build();
-    }
+    @IterableMapping(qualifiedByName = "toUserDto")
+    List<UserDto> toUserDtoList(List<User> users);
 
-    public UserDto toUserDtoWithPassword(User user) {
-        if (user == null) return null;
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .aboutMe(user.getAboutMe())
-                .build();
-    }
+    @Named("toUserDto")
+    @Mapping(target = "password", ignore = true)
+    UserDto toUserDto(User user);
+
+    @Named("toUserDtoWithPassword")
+    UserDto toUserDtoWithPassword(User user);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = IGNORE)
+    void updateUser(UpdateUserRequest updateUserRequest, @MappingTarget User userToUpdate);
 }
-

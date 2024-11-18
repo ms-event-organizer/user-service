@@ -8,8 +8,6 @@ import meetup.user_service.user.dto.NewUserRequest;
 import meetup.user_service.user.dto.UpdateUserRequest;
 import meetup.user_service.user.dto.UserDto;
 import meetup.user_service.user.service.UserService;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +41,7 @@ public class UserController {
     @PatchMapping
     public UserDto updateUser(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestHeader("X-Sharer-User-Password") String userPassword,
-                              @RequestBody UpdateUserRequest updateUserRequest) {
+                              @RequestBody @Valid UpdateUserRequest updateUserRequest) {
         log.debug("Updating user id = '{}'", userId);
         return userService.updateUser(userId, userPassword, updateUserRequest);
     }
@@ -59,9 +57,8 @@ public class UserController {
     public List<UserDto> getUsers(@RequestHeader("X-Sharer-User-Id") Long userId,
                                   @RequestParam(defaultValue = "0") @Min(0) Integer from,
                                   @RequestParam(defaultValue = "10") @Min(1) Integer size) {
-        Pageable pageable = PageRequest.of(from, size);
         log.debug("User id = '{}' requests info about all users", userId);
-        return userService.getUsers(userId, pageable);
+        return userService.getUsers(userId, from, size);
     }
 
     @DeleteMapping

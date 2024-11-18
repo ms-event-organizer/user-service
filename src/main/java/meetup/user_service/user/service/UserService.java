@@ -14,7 +14,7 @@ public interface UserService {
 
     UserDto getUser(Long userId, Long id);
 
-    List<UserDto> getUsers(Long userId, Pageable pageable);
+    List<UserDto> getUsers(Long userId, Integer from, Integer size);
 
     void deleteUser(Long userId, String userPassword);
 }
