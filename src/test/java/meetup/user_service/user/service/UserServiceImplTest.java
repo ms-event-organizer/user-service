@@ -1,7 +1,6 @@
 package meetup.user_service.user.service;
 
 import meetup.user_service.exception.NotFoundException;
-import meetup.user_service.exception.ValidationException;
 import meetup.user_service.user.dao.UserRepository;
 import meetup.user_service.user.dto.NewUserRequest;
 import meetup.user_service.user.dto.UpdateUserRequest;
@@ -21,10 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -63,39 +60,16 @@ class UserServiceImplTest {
                 .password("hashedPassword")
                 .aboutMe("Hello")
                 .build();
-        when(passwordUtils.isPasswordStrong(request.password())).thenReturn(true);
         when(passwordUtils.hashPassword("StrongP@ss1")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toUserDto(user)).thenReturn(new UserDto(1L, "John", "john@example.com", null, "Hello"));
+        when(userMapper.toUser(request)).thenReturn(new User(1L, "John", "john@example.com", null, "Hello"));
 
         UserDto result = userService.createUser(1L, request);
 
         assertNotNull(result);
         assertEquals("John", result.name());
         assertEquals("john@example.com", result.email());
-    }
-
-    @Test
-    void createUser_WeakPassword_ThrowsException() {
-        NewUserRequest request = new NewUserRequest(
-                "John",
-                "john@example.com",
-                "weak",
-                "Hello");
-        when(passwordUtils.isPasswordStrong(request.password())).thenReturn(false);
-        when(passwordUtils.getNotStrongPasswordText()).thenReturn(
-                "Password is not strong! Password: at least 8 characters, one uppercase, one lowercase, one digit, and one special character !@#$%^&*()-+"
-        );
-
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> userService.createUser(1L, request)
-        );
-
-        assertEquals(
-                "Password is not strong! Password: at least 8 characters, one uppercase, one lowercase, one digit, and one special character !@#$%^&*()-+",
-                exception.getMessage()
-        );
     }
 
     @Test
@@ -111,7 +85,6 @@ class UserServiceImplTest {
                 .aboutMe("Hello")
                 .build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordUtils.isPasswordStrong(request.password())).thenReturn(true);
         when(passwordUtils.verifyPassword("OldPassword", "hashedPassword")).thenReturn(true);
         when(userRepository.save(any(User.class))).thenReturn(user);
         UserDto newUserDto = new UserDto(
@@ -167,18 +140,20 @@ class UserServiceImplTest {
 
     @Test
     void getUsers_Success() {
+        Integer page = 1;
+        Integer size = 10;
         List<User> users = List.of(
                 User.builder().id(1L).name("User1").build(),
                 User.builder().id(2L).name("User2").build()
         );
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(page, size);
         when(userRepository.findAll(pageable)).thenReturn(new PageImpl<>(users));
         when(userMapper.toUserDtoList(users)).thenReturn(List.of(
                 new UserDto(1L, "User1", "user1@example.com", null, null),
                 new UserDto(2L, "User2", "user2@example.com", null, null)
         ));
 
-        List<UserDto> result = userService.getUsers(1L, pageable);
+        List<UserDto> result = userService.getUsers(1L, page, size);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -210,23 +185,4 @@ class UserServiceImplTest {
         assertEquals("User id = 1 not found!", exception.getMessage());
     }
 
-    @Test
-    void verifyPassword_Strength_Success() {
-        String password = "ValidP@ss1";
-        when(passwordUtils.isPasswordStrong(password)).thenReturn(true);
-
-        boolean result = passwordUtils.isPasswordStrong(password);
-
-        assertTrue(result);
-    }
-
-    @Test
-    void verifyPassword_Strength_Failure() {
-        String password = "weak";
-        when(passwordUtils.isPasswordStrong(password)).thenReturn(false);
-
-        boolean result = passwordUtils.isPasswordStrong(password);
-
-        assertFalse(result);
-    }
 }

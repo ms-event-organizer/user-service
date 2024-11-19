@@ -8,6 +8,5 @@ class MeetupUserServiceTest {
 
     @Test
     void contextLoads() {
-
     }
 }

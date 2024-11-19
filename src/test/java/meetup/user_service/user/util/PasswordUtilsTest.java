@@ -1,8 +1,12 @@
 package meetup.user_service.user.util;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PasswordUtilsTest {
     private PasswordUtils passwordUtils;
@@ -33,53 +37,5 @@ class PasswordUtilsTest {
         String wrongPassword = "WrongPassword1";
         String hashedPassword = passwordUtils.hashPassword(password);
         assertFalse(passwordUtils.verifyPassword(wrongPassword, hashedPassword));
-    }
-
-    @Test
-    void testIsPasswordStrong_ValidPassword() {
-        String password = "StrongP@ss1";
-        assertTrue(passwordUtils.isPasswordStrong(password));
-    }
-
-    @Test
-    void testIsPasswordStrong_MissingUppercase() {
-        String password = "weakp@ss1";
-        assertFalse(passwordUtils.isPasswordStrong(password));
-    }
-
-    @Test
-    void testIsPasswordStrong_MissingLowercase() {
-        String password = "WEAKP@SS1";
-        assertFalse(passwordUtils.isPasswordStrong(password));
-    }
-
-    @Test
-    void testIsPasswordStrong_MissingDigit() {
-        String password = "WeakPassword!";
-        assertFalse(passwordUtils.isPasswordStrong(password));
-    }
-
-    @Test
-    void testIsPasswordStrong_MissingSpecialCharacter() {
-        String password = "WeakP1ssword";
-        assertFalse(passwordUtils.isPasswordStrong(password));
-    }
-
-    @Test
-    void testIsPasswordStrong_TooShort() {
-        String password = "Short1!";
-        assertFalse(passwordUtils.isPasswordStrong(password));
-    }
-
-    @Test
-    void testIsPasswordStrong_NullPassword() {
-        String password = null;
-        assertFalse(passwordUtils.isPasswordStrong(password));
-    }
-
-    @Test
-    void testIsPasswordStrong_EmptyPassword() {
-        String password = "";
-        assertFalse(passwordUtils.isPasswordStrong(password));
     }
 }

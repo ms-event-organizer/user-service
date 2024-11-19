@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -82,7 +83,7 @@ class UserControllerTest {
         UserDto user1 = new UserDto(1L, "John", "john@example.com", null, "Hello");
         UserDto user2 = new UserDto(2L, "Jane", "jane@example.com", null, "Hi");
 
-        Mockito.when(userService.getUsers(eq(1L), any())).thenReturn(List.of(user1, user2));
+        Mockito.when(userService.getUsers(eq(1L), anyInt(), anyInt())).thenReturn(List.of(user1, user2));
 
         mockMvc.perform(get("/users")
                         .header("X-Sharer-User-Id", 1L)
