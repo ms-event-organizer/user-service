@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1731581261169-1
+      author: Viktor_Wagner
+changes:
+  - sqlFile:
+      dbms: postgresql
+      path: migrations/001_create_tables.sql
+      relativeToChangelogFile: true
