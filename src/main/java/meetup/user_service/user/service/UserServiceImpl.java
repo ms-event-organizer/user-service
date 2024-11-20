@@ -27,11 +27,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(Long userId, NewUserRequest newUserRequest) {
-        User newUser = userRepository.save(
-                userMapper.toUser(newUserRequest)
-        );
+        User newUser = userMapper.toUser(newUserRequest);
+        newUser.setPassword(passwordUtils.hashPassword(newUser.getPassword()));
+        userRepository.save(newUser);
         log.info("User with id = '{}' was created", newUser.getId());
-        return userMapper.toUserDto(newUser);
+        return userMapper.toUserDtoWithPassword(newUser);
     }
 
     @Override
@@ -39,16 +39,19 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         verifyPassword(userPassword, user.getPassword());
         userMapper.updateUser(updateUserRequest, user);
+        if (updateUserRequest.password() != null){
+            user.setPassword(passwordUtils.hashPassword(updateUserRequest.password()));
+        }
         userRepository.save(user);
         log.info("User with id = '{}' was updated", user.getId());
-        return userMapper.toUserDto(user);
+        return userMapper.toUserDtoWithPassword(user);
     }
 
     @Override
     public UserDto getUser(Long userId, Long id) {
-        User user = getUserById(userId);
+        User user = getUserById(id);
         UserDto userDto = userId.equals(id) ? userMapper.toUserDtoWithPassword(user) : userMapper.toUserDto(user);
-        log.debug("User with id = '{}' was found", userId);
+        log.debug("User with id = '{}' was found", id);
         return userDto;
     }
 

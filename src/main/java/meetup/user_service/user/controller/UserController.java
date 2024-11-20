@@ -32,29 +32,29 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public UserDto createUser(@RequestHeader(value = "X-User-Id", required = false) Long userId,
                               @RequestBody @Valid NewUserRequest newUserRequest) {
         log.debug("Creating user '{}' by user id = '{}'", newUserRequest.name(), userId);
         return userService.createUser(userId, newUserRequest);
     }
 
     @PatchMapping
-    public UserDto updateUser(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @RequestHeader("X-Sharer-User-Password") String userPassword,
+    public UserDto updateUser(@RequestHeader("X-User-Id") Long userId,
+                              @RequestHeader("X-User-Password") String userPassword,
                               @RequestBody @Valid UpdateUserRequest updateUserRequest) {
         log.debug("Updating user id = '{}'", userId);
         return userService.updateUser(userId, userPassword, updateUserRequest);
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public UserDto getUser(@RequestHeader("X-User-Id") Long userId,
                            @PathVariable Long id) {
         log.debug("User id = '{}' requests info about user id = '{}'", userId, id);
         return userService.getUser(userId, id);
     }
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<UserDto> getUsers(@RequestHeader("X-User-Id") Long userId,
                                   @RequestParam(defaultValue = "0") @Min(0) Integer from,
                                   @RequestParam(defaultValue = "10") @Min(1) Integer size) {
         log.debug("User id = '{}' requests info about all users", userId);
@@ -63,8 +63,8 @@ public class UserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@RequestHeader("X-Sharer-User-Id") Long userId,
-                           @RequestHeader("X-Sharer-User-Password") String userPassword) {
+    public void deleteUser(@RequestHeader("X-User-Id") Long userId,
+                           @RequestHeader("X-User-Password") String userPassword) {
         log.debug("Deleting user id = '{}'", userId);
         userService.deleteUser(userId, userPassword);
     }
