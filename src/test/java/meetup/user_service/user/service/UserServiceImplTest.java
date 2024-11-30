@@ -67,7 +67,6 @@ class UserServiceImplTest {
 
         UserDto result = userService.createUser(1L, request);
 
-        assertNotNull(result);
         assertEquals("John", result.name());
         assertEquals("john@example.com", result.email());
     }
