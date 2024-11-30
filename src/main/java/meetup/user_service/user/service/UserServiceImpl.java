@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         verifyPassword(userPassword, user.getPassword());
         userMapper.updateUser(updateUserRequest, user);
-        if (updateUserRequest.password() != null){
+        if (updateUserRequest.password() != null) {
             user.setPassword(passwordUtils.hashPassword(updateUserRequest.password()));
         }
         userRepository.save(user);

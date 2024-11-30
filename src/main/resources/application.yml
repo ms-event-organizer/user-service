@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    password: 12345
+    password: root
     url: jdbc:postgresql://localhost:5432/mus
-    username: dbuser
+    username: postgres
   jpa:
     hibernate:
       ddl-auto: validate

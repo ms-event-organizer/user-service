@@ -17,7 +17,7 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    @Mapping(target = "id", ignore = true)
+    //@Mapping(target = "id", ignore = true)
     User toUser(NewUserRequest newUserRequest);
 
     @IterableMapping(qualifiedByName = "toUserDto")
