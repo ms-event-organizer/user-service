@@ -62,11 +62,21 @@ class UserServiceImplTest {
                 .build();
         when(passwordUtils.hashPassword("StrongP@ss1")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userMapper.toUserDto(user)).thenReturn(new UserDto(1L, "John", "john@example.com", null, "Hello"));
-        when(userMapper.toUser(request)).thenReturn(new User(1L, "John", "john@example.com", null, "Hello"));
+        when(userMapper.toUserDtoWithPassword(user)).thenReturn(new UserDto(
+                1L,
+                "John",
+                "john@example.com",
+                "StrongP@ss1",
+                "Hello"));
+        when(userMapper.toUser(request)).thenReturn(new User(1L,
+                "John",
+                "john@example.com",
+                "hashedPassword",
+                "Hello"));
 
         UserDto result = userService.createUser(1L, request);
 
+        assertNotNull(result);
         assertEquals("John", result.name());
         assertEquals("john@example.com", result.email());
     }
@@ -92,7 +102,7 @@ class UserServiceImplTest {
                 "john@example.com",
                 "NewP@ss1",
                 "Updated bio");
-        when(userMapper.toUserDto(user)).thenReturn(newUserDto);
+        when(userMapper.toUserDtoWithPassword(user)).thenReturn(newUserDto);
 
         UserDto result = userService.updateUser(1L, "OldPassword", request);
 

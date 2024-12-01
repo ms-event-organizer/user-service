@@ -29,9 +29,9 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(Long userId, NewUserRequest newUserRequest) {
         User newUser = userMapper.toUser(newUserRequest);
         newUser.setPassword(passwordUtils.hashPassword(newUser.getPassword()));
-        userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
         log.info("User with id = '{}' was created", newUser.getId());
-        return userMapper.toUserDtoWithPassword(newUser);
+        return userMapper.toUserDtoWithPassword(savedUser);
     }
 
     @Override
@@ -42,9 +42,9 @@ public class UserServiceImpl implements UserService {
         if (updateUserRequest.password() != null) {
             user.setPassword(passwordUtils.hashPassword(updateUserRequest.password()));
         }
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
         log.info("User with id = '{}' was updated", user.getId());
-        return userMapper.toUserDtoWithPassword(user);
+        return userMapper.toUserDtoWithPassword(savedUser);
     }
 
     @Override
@@ -81,4 +81,5 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException(passwordUtils.getWrongPasswordText());
         }
     }
+
 }
