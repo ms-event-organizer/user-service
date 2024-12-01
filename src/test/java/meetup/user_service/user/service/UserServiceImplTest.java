@@ -38,12 +38,12 @@ class UserServiceImplTest {
     @Mock
     private PasswordUtils passwordUtils;
 
-    private UserServiceImpl userService;
+    private meetup.user_service.user.service.UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository, userMapper, passwordUtils);
+        userService = new meetup.user_service.user.service.UserServiceImpl(userRepository, userMapper, passwordUtils);
     }
 
     @Test
@@ -63,16 +63,16 @@ class UserServiceImplTest {
         when(passwordUtils.hashPassword("StrongP@ss1")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toUserDtoWithPassword(user)).thenReturn(new UserDto(
-                1L,
-                "John",
-                "john@example.com",
-                "StrongP@ss1",
-                "Hello"));
+            1L,
+            "John",
+            "john@example.com",
+            "StrongP@ss1",
+            "Hello"));
         when(userMapper.toUser(request)).thenReturn(new User(1L,
-                "John",
-                "john@example.com",
-                "hashedPassword",
-                "Hello"));
+            "John",
+            "john@example.com",
+            "hashedPassword",
+            "Hello"));
 
         UserDto result = userService.createUser(1L, request);
 

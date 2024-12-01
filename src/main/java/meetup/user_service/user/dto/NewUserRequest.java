@@ -6,6 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import meetup.user_service.user.util.StrongPassword;
 
+/**
+ * @param name
+ * @param email
+ * @param password
+ * @param aboutMe
+ */
 @Schema(description = "New user request")
 public record NewUserRequest(
         @NotBlank(message = "Name can not be blank")

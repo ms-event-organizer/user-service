@@ -3,6 +3,13 @@ package meetup.user_service.user.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
+/**
+ * @param id
+ * @param name
+ * @param email
+ * @param password
+ * @param aboutMe
+ */
 @Schema(description = "User")
 @Builder
 public record UserDto(

@@ -9,11 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class MeetupUserServiceTest {
 
-    @Autowired
+  @Autowired
     private UserController userController;
 
     @Test
     public void contextLoads() {
-        Assertions.assertThat(userController).isNotNull();
+    Assertions.assertThat(userController).isNotNull();
     }
 }
