@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:13.7-alpine");
+    private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
 
     @Mock
     private UserRepository userRepository;
