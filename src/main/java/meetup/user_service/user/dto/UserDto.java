@@ -2,6 +2,7 @@ package meetup.user_service.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import meetup.user_service.user.model.User;
 
 /**
  * @param id
@@ -23,5 +24,4 @@ public record UserDto(
         String password,
         @Schema(description = "User about me")
         String aboutMe
-) {
-}
+) {}
