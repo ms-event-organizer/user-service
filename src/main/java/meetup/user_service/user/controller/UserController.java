@@ -36,16 +36,16 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-  @Operation(summary = "Create user")
+    @Operation(summary = "Create user")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User was created", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+            @ApiResponse(responseCode = "201", description = "User was created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
             }),
-    @ApiResponse(responseCode = "400", description = "Validation error", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "400", description = "Validation error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
-    @ApiResponse(responseCode = "500", description = "Unknown error", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "500", description = "Unknown error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             })
     })
     @PostMapping
@@ -55,22 +55,23 @@ public class UserController {
         log.debug("Creating user '{}' by user id = '{}'", newUserRequest.name(), userId);
         return userService.createUser(userId, newUserRequest);
     }
-  @Operation(summary = "Update user")
+
+    @Operation(summary = "Update user")
     @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "User was updated", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+            @ApiResponse(responseCode = "200", description = "User was updated", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
             }),
-    @ApiResponse(responseCode = "400", description = "Validation error", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "400", description = "Validation error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
-    @ApiResponse(responseCode = "400", description = "Wrong password!", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "400", description = "Wrong password!", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
-    @ApiResponse(responseCode = "404", description = "User is not found", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "404", description = "User is not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
-    @ApiResponse(responseCode = "500", description = "Unknown error", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "500", description = "Unknown error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             })
     })
     @PatchMapping
@@ -81,16 +82,16 @@ public class UserController {
         return userService.updateUser(userId, userPassword, updateUserRequest);
     }
 
-  @Operation(summary = "Find user by id")
+    @Operation(summary = "Find user by id")
     @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "User was found", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+            @ApiResponse(responseCode = "200", description = "User was found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
             }),
-    @ApiResponse(responseCode = "404", description = "User is not found", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "404", description = "User is not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
-    @ApiResponse(responseCode = "500", description = "Unknown error", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "500", description = "Unknown error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             })
     })
     @GetMapping("/{id}")
@@ -100,13 +101,13 @@ public class UserController {
         return userService.getUser(userId, id);
     }
 
-  @Operation(summary = "Get users")
+    @Operation(summary = "Get users")
     @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "Found users", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+            @ApiResponse(responseCode = "200", description = "Found users", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
             }),
-    @ApiResponse(responseCode = "500", description = "Unknown error", content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "500", description = "Unknown error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             })
     })
     @GetMapping
@@ -117,17 +118,17 @@ public class UserController {
         return userService.getUsers(userId, from, size);
     }
 
-  @Operation(summary = "Delete user")
+    @Operation(summary = "Delete user")
     @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "User was deleted"),
-    @ApiResponse(responseCode = "400", description = "Wrong password!", content = {
-             @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "200", description = "User was deleted"),
+            @ApiResponse(responseCode = "400", description = "Wrong password!", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
-    @ApiResponse(responseCode = "404", description = "User not found", content = {
-             @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "404", description = "User not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
-    @ApiResponse(responseCode = "500", description = "Unknown error", content = {
-             @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            @ApiResponse(responseCode = "500", description = "Unknown error", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             })
     })
     @DeleteMapping

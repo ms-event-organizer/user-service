@@ -5,11 +5,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import meetup.user_service.user.util.StrongPassword;
 
-/**
- * @param name
- * @param password
- * @param aboutMe
- */
 @Schema(description = "Update User Request")
 public record UpdateUserRequest(
         @Pattern(regexp = "^(?!\\s*$).+", message = "Name can not be empty")
