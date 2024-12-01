@@ -1,19 +1,16 @@
 package meetup.user_service;
 
-import meetup.user_service.user.controller.UserController;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.testcontainers.utility.TestcontainersConfiguration;
 
 @SpringBootTest
+@Import(TestcontainersConfiguration.class)
 class MeetupUserServiceTest {
 
-  @Autowired
-    private UserController userController;
+  @Test
+  void contextLoads() {
+  }
 
-    @Test
-    public void contextLoads() {
-    Assertions.assertThat(userController).isNotNull();
-    }
 }
