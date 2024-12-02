@@ -16,9 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -26,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(meetup.user_service.user.controller.UserController.class)
 class UserControllerTest {
 
     @Autowired
@@ -51,7 +49,7 @@ class UserControllerTest {
         Mockito.when(userService.createUser(eq(1L), any(NewUserRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/users")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -69,7 +67,7 @@ class UserControllerTest {
         Mockito.when(userService.getUser(1L, 1L)).thenReturn(response);
 
         mockMvc.perform(get("/users/1")
-                        .header("X-Sharer-User-Id", 1L))
+                        .header("X-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("John"))
@@ -86,7 +84,7 @@ class UserControllerTest {
         Mockito.when(userService.getUsers(eq(1L), anyInt(), anyInt())).thenReturn(List.of(user1, user2));
 
         mockMvc.perform(get("/users")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header("X-User-Id", 1L)
                         .param("from", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -110,8 +108,8 @@ class UserControllerTest {
         Mockito.when(userService.updateUser(eq(1L), eq("currentPassword"), any(UpdateUserRequest.class))).thenReturn(response);
 
         mockMvc.perform(patch("/users")
-                        .header("X-Sharer-User-Id", 1L)
-                        .header("X-Sharer-User-Password", "currentPassword")
+                        .header("X-User-Id", 1L)
+                        .header("X-User-Password", "currentPassword")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -127,8 +125,8 @@ class UserControllerTest {
         Mockito.doNothing().when(userService).deleteUser(eq(1L), eq("currentPassword"));
 
         mockMvc.perform(delete("/users")
-                        .header("X-Sharer-User-Id", 1L)
-                        .header("X-Sharer-User-Password", "currentPassword"))
+                        .header("X-User-Id", 1L)
+                        .header("X-User-Password", "currentPassword"))
                 .andExpect(status().isNoContent());
     }
 

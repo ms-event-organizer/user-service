@@ -12,9 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +32,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Testcontainers
 class UserServiceImplTest {
+    @Container
+    @ServiceConnection
+    private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
 
     @Mock
     private UserRepository userRepository;
@@ -38,12 +48,12 @@ class UserServiceImplTest {
     @Mock
     private PasswordUtils passwordUtils;
 
-    private UserServiceImpl userService;
+    private meetup.user_service.user.service.UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository, userMapper, passwordUtils);
+        userService = new meetup.user_service.user.service.UserServiceImpl(userRepository, userMapper, passwordUtils);
     }
 
     @Test
@@ -62,8 +72,17 @@ class UserServiceImplTest {
                 .build();
         when(passwordUtils.hashPassword("StrongP@ss1")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userMapper.toUserDto(user)).thenReturn(new UserDto(1L, "John", "john@example.com", null, "Hello"));
-        when(userMapper.toUser(request)).thenReturn(new User(1L, "John", "john@example.com", null, "Hello"));
+        when(userMapper.toUserDtoWithPassword(user)).thenReturn(new UserDto(
+            1L,
+            "John",
+            "john@example.com",
+            "StrongP@ss1",
+            "Hello"));
+        when(userMapper.toUser(request)).thenReturn(new User(1L,
+            "John",
+            "john@example.com",
+            "hashedPassword",
+            "Hello"));
 
         UserDto result = userService.createUser(1L, request);
 
@@ -93,7 +112,7 @@ class UserServiceImplTest {
                 "john@example.com",
                 "NewP@ss1",
                 "Updated bio");
-        when(userMapper.toUserDto(user)).thenReturn(newUserDto);
+        when(userMapper.toUserDtoWithPassword(user)).thenReturn(newUserDto);
 
         UserDto result = userService.updateUser(1L, "OldPassword", request);
 
