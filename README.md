@@ -15,8 +15,11 @@
 • [Галина Лобачёва] (https://github.com/KoshanSky1).
 
 ## Технологический стек:
-
-
+![](https://camo.githubusercontent.com/270dd3f671d1645fc7af25d667bb2edc3a56937650e211fd438d01d45a0c4ef4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a6176612d2532334646373830303f7374796c653d706c6173746963)
+![](https://camo.githubusercontent.com/db3b2642cd8eb16b1ca5f24ee9b3a3749072a1315f8c0a5c32fbd18301825d1a/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67253230426f6f742d2532333644423333463f7374796c653d706c6173746963266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d626c61636b)
+![](https://www.google.ru/search?q=+bcrypt&udm=2&sxsrf=ADLYWIJePwIh5QesEQs8FaNFxHIBF7VBoQ%3A1734891997975#vhid=-LTU9bogiMsfqM&vssid=mosaic)
+![](https://camo.githubusercontent.com/7a983da2ce01a3efa8493a9212c5b2dcfe4f091bb83d527d76592225a3b8604e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67253230446174612532304a50412d2532333644423333463f7374796c653d706c6173746963266c6f676f3d737072696e67266c6f676f436f6c6f723d626c61636b)
+![](https://camo.githubusercontent.com/27176401988b92033156421dbc03988584a6910a755c314135228ec9dd484158/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4c69717569626173652d2532333239363246463f7374796c653d706c6173746963266c6f676f3d6c6971756962617365266c6f676f436f6c6f723d7768697465)
 
 ## Эндпоинты:
 • POST /users - создание пользователя;
@@ -39,11 +42,11 @@
 
 •	Запустить микросервис командой java -jar user-service.jar.
 
-•	Микросервис будет доступен по адресу https:/localhost.
+•	Микросервис будет доступен по адресу http://localhost:8080.
 
 ### Второй способ:
 •	Установить и запустить Docker.
 
 •	Запустить контейнер командой docker compose up.
 
-•	Микросервис будет доступен по адресу https:/localhost.
+•	Микросервис будет доступен по адресу http://localhost:8080.
