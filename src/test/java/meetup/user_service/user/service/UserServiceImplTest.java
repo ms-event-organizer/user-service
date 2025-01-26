@@ -1,6 +1,7 @@
 package meetup.user_service.user.service;
 
 import meetup.user_service.exception.NotFoundException;
+import meetup.user_service.exception.ValidationException;
 import meetup.user_service.user.dao.UserRepository;
 import meetup.user_service.user.dto.NewUserRequest;
 import meetup.user_service.user.dto.UpdateUserRequest;
@@ -120,6 +121,31 @@ class UserServiceImplTest {
         assertEquals("John Updated", result.name());
         assertEquals("Updated bio", result.aboutMe());
     }
+
+    @Test
+    void updateUser_whenWrongPassword_shouldThrowValidationException() {
+        UpdateUserRequest request = new UpdateUserRequest(
+                "John Updated",
+                "NewP@ss1",
+                "Updated bio");
+        User user = User.builder()
+                .id(1L).name("John")
+                .email("john@example.com")
+                .password("hashedPassword")
+                .aboutMe("Hello")
+                .build();
+        when(userRepository.findById(1L))
+                .thenReturn(Optional.of(user));
+        when(passwordUtils.verifyPassword("OldPassword", "hashedPassword"))
+                .thenReturn(false);
+
+        ValidationException ex = assertThrows(ValidationException.class,
+                () -> userService.updateUser(1L, "OldPassword", request));
+
+
+        assertEquals(passwordUtils.getWrongPasswordText(), ex.getMessage());
+    }
+
 
     @Test
     void getUser_Success() {
