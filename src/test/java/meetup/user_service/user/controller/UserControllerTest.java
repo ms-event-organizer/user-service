@@ -1,6 +1,8 @@
 package meetup.user_service.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import meetup.user_service.exception.ValidationException;
 import meetup.user_service.user.dto.NewUserRequest;
 import meetup.user_service.user.dto.UpdateUserRequest;
 import meetup.user_service.user.dto.UserDto;
@@ -11,11 +13,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasValue;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -118,6 +123,24 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("updated@example.com"))
                 .andExpect(jsonPath("$.aboutMe").value("Updated bio"))
                 .andExpect(jsonPath("$.password").doesNotExist());
+    }
+
+    @Test
+    @SneakyThrows
+    void updateUser_whenWrongPassword_shouldThrowValidationException() {
+        UpdateUserRequest request = new UpdateUserRequest("UpdatedName", "UpdatedPassword123!", "Updated bio");
+
+        Mockito.when(userService.updateUser(eq(1L), eq("currentPassword"), any(UpdateUserRequest.class)))
+                .thenThrow(new ValidationException("Wrong password!"));
+
+        mockMvc.perform(patch("/users")
+                        .header("X-User-Id", 1L)
+                        .header("X-User-Password", "currentPassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status", is(HttpStatus.FORBIDDEN.value())))
+                .andExpect(jsonPath("$.errors", hasValue("Wrong password!")));
     }
 
     @Test
