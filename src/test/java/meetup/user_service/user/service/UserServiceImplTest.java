@@ -1,6 +1,7 @@
 package meetup.user_service.user.service;
 
 import meetup.user_service.exception.NotFoundException;
+import meetup.user_service.exception.ValidationException;
 import meetup.user_service.user.dao.UserRepository;
 import meetup.user_service.user.dto.NewUserRequest;
 import meetup.user_service.user.dto.UpdateUserRequest;
@@ -12,9 +13,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +33,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Testcontainers
 class UserServiceImplTest {
+    @Container
+    @ServiceConnection
+    private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
 
     @Mock
     private UserRepository userRepository;
@@ -38,12 +49,12 @@ class UserServiceImplTest {
     @Mock
     private PasswordUtils passwordUtils;
 
-    private UserServiceImpl userService;
+    private meetup.user_service.user.service.UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository, userMapper, passwordUtils);
+        userService = new meetup.user_service.user.service.UserServiceImpl(userRepository, userMapper, passwordUtils);
     }
 
     @Test
@@ -62,8 +73,17 @@ class UserServiceImplTest {
                 .build();
         when(passwordUtils.hashPassword("StrongP@ss1")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userMapper.toUserDto(user)).thenReturn(new UserDto(1L, "John", "john@example.com", null, "Hello"));
-        when(userMapper.toUser(request)).thenReturn(new User(1L, "John", "john@example.com", null, "Hello"));
+        when(userMapper.toUserDtoWithPassword(user)).thenReturn(new UserDto(
+            1L,
+            "John",
+            "john@example.com",
+            "StrongP@ss1",
+            "Hello"));
+        when(userMapper.toUser(request)).thenReturn(new User(1L,
+            "John",
+            "john@example.com",
+            "hashedPassword",
+            "Hello"));
 
         UserDto result = userService.createUser(1L, request);
 
@@ -93,7 +113,7 @@ class UserServiceImplTest {
                 "john@example.com",
                 "NewP@ss1",
                 "Updated bio");
-        when(userMapper.toUserDto(user)).thenReturn(newUserDto);
+        when(userMapper.toUserDtoWithPassword(user)).thenReturn(newUserDto);
 
         UserDto result = userService.updateUser(1L, "OldPassword", request);
 
@@ -101,6 +121,31 @@ class UserServiceImplTest {
         assertEquals("John Updated", result.name());
         assertEquals("Updated bio", result.aboutMe());
     }
+
+    @Test
+    void updateUser_whenWrongPassword_shouldThrowValidationException() {
+        UpdateUserRequest request = new UpdateUserRequest(
+                "John Updated",
+                "NewP@ss1",
+                "Updated bio");
+        User user = User.builder()
+                .id(1L).name("John")
+                .email("john@example.com")
+                .password("hashedPassword")
+                .aboutMe("Hello")
+                .build();
+        when(userRepository.findById(1L))
+                .thenReturn(Optional.of(user));
+        when(passwordUtils.verifyPassword("OldPassword", "hashedPassword"))
+                .thenReturn(false);
+
+        ValidationException ex = assertThrows(ValidationException.class,
+                () -> userService.updateUser(1L, "OldPassword", request));
+
+
+        assertEquals(passwordUtils.getWrongPasswordText(), ex.getMessage());
+    }
+
 
     @Test
     void getUser_Success() {

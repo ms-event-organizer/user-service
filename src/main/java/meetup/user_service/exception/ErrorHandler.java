@@ -1,5 +1,6 @@
 package meetup.user_service.exception;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,11 +27,20 @@ public class ErrorHandler {
         return errorResponse;
     }
 
-    @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidation(final ValidationException e) {
+    public ErrorResponse handleMethodArgumentNotValid(final MethodArgumentNotValidException e) {
         Map<String, String> error = Map.of("error", e.getLocalizedMessage());
         ErrorResponse errorResponse = new ErrorResponse(error, HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
+        log.error(e.getLocalizedMessage());
+        return errorResponse;
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleValidation(final ValidationException e) {
+        Map<String, String> error = Map.of("error", e.getLocalizedMessage());
+        ErrorResponse errorResponse = new ErrorResponse(error, HttpStatus.FORBIDDEN.value(), LocalDateTime.now());
         log.error(e.getLocalizedMessage());
         return errorResponse;
     }

@@ -9,8 +9,8 @@ services:
       - mus-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mus-db:5432/mus
-      - SPRING_DATASOURCE_USERNAME=dbuser
-      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
 
   mus-db:
     image: postgres:16.4
@@ -19,8 +19,8 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_DB=mus
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=review-db
+      - POSTGRES_PASSWORD=root
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
